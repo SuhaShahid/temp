@@ -13,7 +13,6 @@ class UserController extends BaseController {
     console.log("test", users);
     res.status(200).json({
       users: users,
-      message: "Users fetched successfully",
     });
   }
 
@@ -24,7 +23,6 @@ class UserController extends BaseController {
     console.log("test", user);
     res.status(200).json({
       user: user,
-      message: "Users created successfully",
     });
   }
 
@@ -35,8 +33,21 @@ class UserController extends BaseController {
     });
     res.status(200).json({
       user: user,
-      message: "User fetched successfully",
     });
+  }
+
+  async deleteUserById(req, res) {
+    const result = await db.User.destroy({
+      where: { id: req.params.id },
+    });
+
+    return res.status(200).json({
+      message: "User deleted successfully",
+    });
+  }
+  
+  async updateUser(req,res){
+
   }
 }
 
