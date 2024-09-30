@@ -17,7 +17,6 @@ class UserController extends BaseController {
         users: users,
       });
     } catch (error) {
-      console.error("Error fetching users:", error);
       res.status(500).json({ message: "Error fetching users" });
     }
   }
@@ -35,7 +34,6 @@ class UserController extends BaseController {
         user: user,
       });
     } catch (error) {
-      console.error("Error creating user:", error);
       res.status(500).json({ message: "Error creating user" });
     }
   }
@@ -50,7 +48,6 @@ class UserController extends BaseController {
         data: user,
       });
     } catch (error) {
-      console.error("Error fetching user by ID:", error);
       res.status(500).json({ message: "Error fetching user by ID" });
     }
   }
@@ -65,7 +62,6 @@ class UserController extends BaseController {
         message: "User deleted successfully",
       });
     } catch (error) {
-      console.error("Error deleting user:", error);
       res.status(500).json({ message: "Error deleting user" });
     }
   }
