@@ -1,6 +1,5 @@
 const BaseController = require("./BaseController.js");
 const db = require("../models/index.js");
-const user = require("../models/user.js");
 
 class UserController extends BaseController {
   constructor() {
@@ -9,46 +8,79 @@ class UserController extends BaseController {
   }
 
   async getUsers(req, res) {
-    const users = await db.User.findAll();
-    console.log("test", users);
-    res.status(200).json({
-      users: users,
-    });
+    try {
+      const users = await db.User.findAll({
+        where: { isDeleted: false },
+      });
+      console.log("Users fetched:", users);
+      res.status(200).json({
+        users: users,
+      });
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Error fetching users" });
+    }
   }
 
   async createUser(req, res) {
-    console.log("user req", req.body);
+    try {
+      const userBody = {
+        ...req.body,
+        isDeleted: false,
+      };
 
-    const user = await db.User.create(req.body);
-    console.log("test", user);
-    res.status(200).json({
-      user: user,
-    });
+      const user = await db.User.create(userBody);
+      console.log("User created:", user);
+      res.status(200).json({
+        user: user,
+      });
+    } catch (error) {
+      console.error("Error creating user:", error);
+      res.status(500).json({ message: "Error creating user" });
+    }
   }
 
   async getUserById(req, res) {
-    const user = await db.User.findOne({
-      where: { id: req.params.id },
-      rejectOnEmpty: true,
-    });
-    res.status(200).json({
-      user: user,
-    });
+    try {
+      const user = await db.User.findOne({
+        where: { id: req.params.id },
+        rejectOnEmpty: true,
+      });
+      res.status(200).json({
+        data: user,
+      });
+    } catch (error) {
+      console.error("Error fetching user by ID:", error);
+      res.status(500).json({ message: "Error fetching user by ID" });
+    }
   }
 
   async deleteUserById(req, res) {
-    const result = await db.User.destroy({
-      where: { id: req.params.id },
-    });
-
-    return res.status(200).json({
-      message: "User deleted successfully",
-    });
+    try {
+      const result = await db.User.update(
+        { isDeleted: true }, 
+        { where: { id: req.params.id } } 
+      );
+      return res.status(200).json({
+        message: "User deleted successfully",
+      });
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      res.status(500).json({ message: "Error deleting user" });
+    }
   }
   
-  async updateUser(req,res){
+  async updateUser(req, res) {
+    const { id } = req.params;
 
+    const updatedUser = await db.User.update(req.body, {
+      where: { id },
+      returning: true,
+    });
+
+    res.status(200).json({
+      message: "User updated successfully",
+    });
   }
 }
-
 module.exports = new UserController();
