@@ -12,6 +12,6 @@ app.get('/', function (req, res) {
 app.use("/api", routes)
 
 app.listen(3000,()=>{
-    console.log("app will log on : http://localhost:3000");
+    console.log("app will log on : http://localhost:3s000");
     
 })
